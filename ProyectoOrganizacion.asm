@@ -16,14 +16,6 @@
 		li $v0,6
 		syscall
 		
-		#extraer el valor del simbolo si es positvo 0 y si es negativo 1 --0x80000000--  sirve como máscara
-		c.lt.d $f4, $zero			# CC = $f0 < $zero
-		bc1t mostrar_signo     			# Branch if $f0 < $zero
-		
-		#addi $t2, $zero, 0x80000000
-		#and $a0, $t1, $t2
-		#srl  $a0, $a0, 31
-		
 		#mostrando mensajes de resultados
 		li $v0, 4
 		la $a0, fin
@@ -34,10 +26,22 @@
 		la $a0, bits32
 		syscall 
 		
-		#mostrando el bit de signo
-		li $v0, 34
-		add.d $v0, $zero, 1
-		syscall
+		#Mostrar bit de signo
+		c.lt.d $f0, $f4        # CC = $f0 < $f2
+        	bc1t NEGATIVO          # Branch if $f0 < $f2
+        	nop
+        	j POSITIVO
+        
+         #imprimiendo el bit de signo
+        	NEGATIVO: li $v0,1			#$a0 se usa para imprimir int
+        	  addi $a0,$zero,1
+        	  syscall		
+	
+	#imprimiendo bit cuando es un flotante positvo
+	 POSITIVO: li $v0,1			#$a0 se usa para imprimir int
+        	  addi $a0,$zero,0
+        	  syscall	
+	 		
 		
 		#Mostrar el valor
 		li $v0,2
