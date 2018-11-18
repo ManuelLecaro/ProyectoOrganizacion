@@ -1,8 +1,6 @@
 # Lee el valor ingresado por el usuario y lo guarda en un registro
 # Muestra el valor en formato IEEE-754 simple
 # Muestra el valor en formato IEEE-754 doble
-# Muestra el valor en formato Hexadecimal
-# set Register $a0 to contain only bits 12,13,14,15 of $a0
 
 .data
 space_u: .space		32
@@ -11,7 +9,6 @@ user: .asciiz     	"Ingrese el número que quiera transformar al formato IEE-754
 simple:    .asciiz 	"Este es su número en formato IEEE-754 simple: "
 double:    .asciiz 	"Este es su número en formato IEEE-754 double: "
 nl:         .asciiz     	"\n"
-hex:   	   .asciiz     	"Este es su número en hexadecimal: "
 hexDigit:   .asciiz     	"0123456789ABCDEF"
 obuf:       .space      	100
 zerodouble: .double	0.0
@@ -50,10 +47,6 @@ main:
     li      $a1,32		
     jal     printdoub_second		#moviendose a printdoub
 
-    #hexadecimal
-    la      $a0,hex		#mostrando el mensaje de resultado en hexadecimal
-    li      $a1,16		
-    jal     printhex		#moviendose a printhex
 
     li      $v0,10		#Terminando
     syscall
@@ -79,14 +72,6 @@ printdoub:
 printdoub_second:
     li      $a2,1                   # base de numero a imprimir 1, porque es binario
     j       second_part
-    
-    
-# imprimiendo en formato hexadecimal
-#   $a0: donde se guarda el string de salida
-#   $a1: numero de bits que se toman para imprimir
-printhex:
-    li      $a2,4                   # base 4, para imprimir en hexadecimal
-    j       prtanyhex
 
 # imprimiendo segun la base del numero
 #   a0:  donde se guarda el string
@@ -110,19 +95,6 @@ prtany:
     move    $t5,$s0                 # guardando el numero
     j	    print_loop		    #moviendose a prtany_loop
 
-prtanyhex:
-    
-    cvt.w.s $f2,$f0
-
-    li      $v0,4		    #mostrando el valor en $a0
-    syscall
-
-    mfc1.d  $a0,$f2
-    li      $v0,34
-    syscall  
-    j       salto
-    
-
 prtanydouble:
     li      $t7,1
     sllv    $t7,$t7,$a2             # haciendo mascara de bits con un shift logico segun la base del numero a mostrar
@@ -132,7 +104,6 @@ prtanydouble:
     subu    $t6,$t6,1               # puntero al char final
     sb      $zero,0($t6)            # guardando string
 
-    #move    $t2,$s0	                   # guardando el numero
     cvt.d.s $f2,$f0		   #guardando un espacio de 64bits en $t2
     mfc1.d  $s3,$f2
     move    $t2,$s4
