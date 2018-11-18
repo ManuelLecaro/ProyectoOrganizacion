@@ -54,10 +54,6 @@ main:
     la      $a0,hex		#mostrando el mensaje de resultado en hexadecimal
     li      $a1,16		
     jal     printhex		#moviendose a printhex
-    
-    # separando bits en posicion 12,13,14,15
-    srl     $s0,$s0,12
-    andi    $s0,$s0,0x0F
 
     li      $v0,10		#Terminando
     syscall
@@ -121,7 +117,7 @@ prtanyhex:
     li      $v0,4		    #mostrando el valor en $a0
     syscall
 
-    mfc1.d    $a0,$f2
+    mfc1.d  $a0,$f2
     li      $v0,34
     syscall  
     j       salto
